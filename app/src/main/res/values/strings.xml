@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Lab_1</string>
     <string name="Welcome_title">中山大学学生信息系统</string>
+    <string name="User_">学号 :</string>
+    <string name="Pw_">密码 :</string>
+    <string name="plz_input_user_">请输入学号</string>
+    <string name="plz_input_pw_">请输入密码</string>
+    <string name="Student_">学生</string>
+    <string name="Teacher_">教职工</string>
+    <string name="Login_">登陆</string>
+    <string name="Register_">注册</string>
 </resources>
