@@ -19,6 +19,7 @@
         android:id="@+id/textView1" />
 
     <ImageView
+        android:contentDescription="@string/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/sysu"
@@ -35,7 +36,6 @@
         android:text="@string/User_"
         android:textSize="18sp"
         android:textColor="@color/Black"
-        android:layout_marginRight="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/editText1"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText1"
@@ -46,7 +46,7 @@
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="19dp"
         android:textSize="18sp"
         android:hint="@string/plz_input_user_"
         android:inputType="numberDecimal"
@@ -62,13 +62,13 @@
         android:text="@string/Pw_"
         android:textSize="18sp"
         android:textColor="@color/Black"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/editText2"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText2"
         android:id="@+id/textView3"
         app:layout_constraintHorizontal_chainStyle="packed"
-        android:layout_marginEnd="10dp" />
+        />
 
     <EditText
         android:layout_width="300dp"
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Student_"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textSize="18sp"
             android:checked="true"
             />
