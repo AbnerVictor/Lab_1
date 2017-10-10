@@ -3,10 +3,15 @@ package com.example.abnervictor.lab_1;
 import android.content.DialogInterface;
 import android.support.annotation.IdRes;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final RadioButton Radio_Teach = (RadioButton) findViewById(R.id.radio_teach);
-        Radio_Stu.setOnClickListener(new View.OnClickListener(){
+        Radio_Teach.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 Snackbar.make(Radio_Teach,"您选择了教职工",Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener(){
@@ -73,8 +78,122 @@ public class MainActivity extends AppCompatActivity {
         });
         //=====================================================================================//
 
+        //=====================================================================================//
+        //登陆检测
+        final TextInputLayout mUsername = (TextInputLayout) findViewById(R.id.usernameWrapper);
+        final TextInputLayout mPassword = (TextInputLayout) findViewById(R.id.passwordWrapper);
+        final EditText Username = mUsername.getEditText();
+        final EditText Password = mPassword.getEditText();
 
+        final Button mLogin = (Button) findViewById(R.id.login_button);
+        final Button mRegister = (Button) findViewById(R.id.register_button);
 
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean login_success = true;
+                if(Username.getText().toString().isEmpty()){
+                    mUsername.setError("学号不能为空");
+                    mUsername.setErrorEnabled(true);
+                    login_success = false;
+                }
+                else if(!Username.getText().toString().equals("123456")){
+                    mUsername.setError("该学号不存在");
+                    mUsername.setErrorEnabled(true);
+                    login_success = false;
+                }
+                else{
+                    mUsername.setErrorEnabled(false);
+                }
+
+                if(Password.getText().toString().isEmpty()){
+                    mPassword.setError("密码不能为空");
+                    mPassword.setErrorEnabled(true);
+                    login_success = false;
+                }
+                else if(!Password.getText().toString().equals("6666")){
+                    mPassword.setError("密码错误");
+                    mPassword.setErrorEnabled(true);
+                    login_success = false;
+                }
+                else{
+                    mPassword.setErrorEnabled(false);
+                }
+
+                if (login_success){
+                    Snackbar.make(mLogin,"登陆成功",Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener(){
+                        @Override
+                        public void onClick(View view){
+                            Toast.makeText(MainActivity.this,"Snackbar的确定按钮被点击了",Toast.LENGTH_SHORT).show();
+                        }
+                    }).show();
+                }
+                else{
+                    Snackbar.make(mLogin,"学号或密码错误",Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener(){
+                        @Override
+                        public void onClick(View view){
+                            Toast.makeText(MainActivity.this,"Snackbar的确定按钮被点击了",Toast.LENGTH_SHORT).show();
+                        }
+                    }).show();
+                }
+
+            }
+        });//点击登陆按钮时判断输入内容
+
+        Username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mUsername.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });//正在输入时消除提示
+        Password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mPassword.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });//正在输入时消除提示
+
+        //=====================================================================================//
+
+        //=====================================================================================//
+        //注册检测
+        mRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Radio_Stu.isChecked()){
+                    Snackbar.make(mRegister,"学生注册功能未启用",Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener(){
+                        @Override
+                        public void onClick(View view){
+                            Toast.makeText(MainActivity.this,"Snackbar的确定按钮被点击了",Toast.LENGTH_SHORT).show();
+                        }
+                    }).show();
+                }
+                else if(Radio_Teach.isChecked()){
+                    Toast.makeText(MainActivity.this,"教职工注册功能尚未启用",Toast.LENGTH_SHORT).show();
+                }
+                mUsername.setErrorEnabled(false);
+                mPassword.setErrorEnabled(false);
+            }
+        });
+        //=====================================================================================//
 
     }
 }
