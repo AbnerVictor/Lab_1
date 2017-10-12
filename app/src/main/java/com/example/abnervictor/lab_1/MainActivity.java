@@ -16,11 +16,29 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+
 public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        InitLoginView();
+        //=====================================================================================//
+    }
+
+    private void InitLoginView(){
+
+        final int REQUEST_CAMERA = 0;
+        final int REQUEST_ALBUM = 1;
 
         //=====================================================================================//
         //AlertDialog对象的创建
@@ -32,13 +50,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(MainActivity.this,"您选择了["+Items_ProPic_upload[i]+"]",Toast.LENGTH_SHORT).show();
+                if(i == 0){
+                    Intent intent = new Intent(
+                            MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent,
+                            REQUEST_CAMERA);
+                }
+                if(i == 1) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, REQUEST_ALBUM);
+                }
             }
+
+
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(MainActivity.this,"您选择了[取消]",Toast.LENGTH_SHORT).show();
             }
         }).create();
+
+
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,22 +137,23 @@ public class MainActivity extends AppCompatActivity {
                     login_success = false;
                 }
                 else{
+                    if(Password.getText().toString().isEmpty()){
+                        mPassword.setError("密码不能为空");
+                        mPassword.setErrorEnabled(true);
+                        login_success = false;
+                    }
+                    else if(!Password.getText().toString().equals("6666")){
+                        mPassword.setError("密码错误");
+                        mPassword.setErrorEnabled(true);
+                        login_success = false;
+                    }
+                    else{
+                        mPassword.setErrorEnabled(false);
+                    }
                     mUsername.setErrorEnabled(false);
                 }
 
-                if(Password.getText().toString().isEmpty()){
-                    mPassword.setError("密码不能为空");
-                    mPassword.setErrorEnabled(true);
-                    login_success = false;
-                }
-                else if(!Password.getText().toString().equals("6666")){
-                    mPassword.setError("密码错误");
-                    mPassword.setErrorEnabled(true);
-                    login_success = false;
-                }
-                else{
-                    mPassword.setErrorEnabled(false);
-                }
+
 
                 if (login_success){
                     Snackbar.make(mLogin,"登陆成功",Snackbar.LENGTH_SHORT).setAction("确定", new View.OnClickListener(){
@@ -153,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+
             }
         });//正在输入时消除提示
         Password.addTextChangedListener(new TextWatcher() {
