@@ -1,14 +1,19 @@
 package com.example.abnervictor.lab_1;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
-import android.support.annotation.IdRes;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,16 +21,17 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import java.io.File;
+import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CAMERA = 0;
+    private static final int REQUEST_ALBUM = 1;
+    private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
+    private File tempFile;
+    private ImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +40,33 @@ public class MainActivity extends AppCompatActivity {
         InitLoginView();
         //=====================================================================================//
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bm = null;
+        ContentResolver resolver = getContentResolver();
+        if (requestCode == REQUEST_ALBUM && data != null){
+            try{
+                Uri originalUri = data.getData();
+                bm = MediaStore.Images.Media.getBitmap(resolver, originalUri);
+                profilePic.setImageBitmap(bm);//ThumbnailUtils.extractThumbnail(bm,120,120)可以压缩图片
+            }catch (IOException e){
+                Log.e("TAG-->Error",e.toString());
+            }
+        }//从相册中选取图片
+        else if(requestCode == REQUEST_CAMERA){
+            Bundle extras = data.getExtras();
+            bm = (Bitmap) extras.get("data");
+            profilePic.setImageBitmap(bm);
+        };//拍照
+    };//需在Manifest中加入权限<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    private void InitLoginView(){
+    private void InitLoginView(){//初始化登录界面
 
-        final int REQUEST_CAMERA = 0;
-        final int REQUEST_ALBUM = 1;
+        profilePic = (ImageView) findViewById(R.id.Profile_picture);//头像
 
         //=====================================================================================//
         //AlertDialog对象的创建
-        ImageView profilePic = (ImageView) findViewById(R.id.Profile_picture);
-
         final AlertDialog.Builder ProPic_upload = new AlertDialog.Builder(this);
         final String[] Items_ProPic_upload = {"拍摄","从相册选择"};
         ProPic_upload.setTitle("上传头像").setItems(Items_ProPic_upload, new DialogInterface.OnClickListener() {
@@ -51,20 +74,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(MainActivity.this,"您选择了["+Items_ProPic_upload[i]+"]",Toast.LENGTH_SHORT).show();
                 if(i == 0){
-                    Intent intent = new Intent(
+                    Intent capture = new Intent(
                             MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent,
+                    startActivityForResult(capture,
                             REQUEST_CAMERA);
-                }
+                }//选择拍照
                 if(i == 1) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent, REQUEST_ALBUM);
-                }
+                    Intent getAlbum = new Intent(Intent.ACTION_PICK, null);
+                    getAlbum.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    startActivityForResult(getAlbum, REQUEST_ALBUM);
+                }//选择打开相册
             }
-
-
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -72,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }).create();
 
+        //=====================================================================================//
 
 
         profilePic.setOnClickListener(new View.OnClickListener() {

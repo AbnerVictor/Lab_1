@@ -23,7 +23,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@mipmap/sysu"
         android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
